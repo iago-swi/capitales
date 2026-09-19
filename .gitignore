@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Generated web and desktop builds
+dist/
+release/
+
+# TypeScript/Vite generated files
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Local databases and Firebase emulator data
+*.sqlite
+*.sqlite3
+firebase-data/
+
+# Logs and environment files
+*.log
+.env
+.env.*
+!.env.example
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
