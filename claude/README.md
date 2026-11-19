@@ -21,7 +21,7 @@ Remake of a Visual Basic game from ~1996.
 ## Download
 
 Ready-built for Windows, Linux, Android and the browser:
-[**Releases**](https://github.com/iago-swi/capitales-claude/releases/latest).
+[**Release 1.0.2**](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2).
 
 The browser one is a single HTML file — download it, double-click it, done. It
 works offline, with no install and no server.
@@ -90,5 +90,5 @@ section 1 has the three bugs that gap has cost.
 ## Documentation
 
 - `PROJECT.md` — everything worth knowing, in English
-- `PROJET.md` — la même chose, en français
+- `PROJET.md` — the same, in French
 - `docs/superpowers/` — the original design spec and implementation plan
