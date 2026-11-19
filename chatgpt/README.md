@@ -1,6 +1,6 @@
 # Capitales
 
-[Documentation complète en français](PROJECT_GUIDE_FR.md) · [Complete documentation in English](PROJECT_GUIDE.md)
+[Complete documentation in French](PROJECT_GUIDE_FR.md) · [Complete documentation in English](PROJECT_GUIDE.md)
 
 A world-capitals quiz delivered as a browser game plus Windows and Linux desktop apps. All editions use SQLite through `sql.js`; the browser persists its database in local browser storage and desktop editions store `capitales.sqlite` in the user-data directory.
 

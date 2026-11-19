@@ -1,6 +1,6 @@
 # Capitales — Project Guide
 
-[Documentation française](PROJECT_GUIDE_FR.md)
+[French documentation](PROJECT_GUIDE_FR.md)
 
 This document explains how the Capitales project works, how to run and build it, where its data is stored, and how to extend it safely.
 
