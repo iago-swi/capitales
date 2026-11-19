@@ -9,6 +9,10 @@ A world capitals quiz, built in two versions to compare what different AI assist
 
 Each version is self-contained, with its own sources, dependencies and instructions. See the README in its folder for how to install and run it.
 
+## Claude version
+
+![Claude version, Naming mode: a country outline with a marker on its capital, and four cities to choose from](claude/docs/screenshots/naming.png)
+
 ## Structure
 
 ```text
