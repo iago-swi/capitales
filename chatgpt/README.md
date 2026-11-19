@@ -4,6 +4,8 @@
 
 A world-capitals quiz delivered as a browser game plus Windows and Linux desktop apps. All editions use SQLite through `sql.js`; the browser persists its database in local browser storage and desktop editions store `capitales.sqlite` in the user-data directory.
 
+![Capitales game welcome screen](docs/capitales-game.png)
+
 For architecture, database locations and schema, localization, packaging, testing, troubleshooting, and extension instructions, see the documentation links above.
 
 ## Run
