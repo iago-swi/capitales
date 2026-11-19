@@ -1,0 +1,66 @@
+{
+  "name": "capitales",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "A world capitals map quiz for browsers, Windows, and Linux",
+  "author": "Philippe Noth",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "dev:windows": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "tsc -b && vite build",
+    "build:windows": "npm run build && electron-builder --win nsis portable",
+    "build:linux": "npm run build && electron-builder --linux AppImage tar.gz",
+    "build:linux:archive": "npm run build && electron-builder --linux tar.gz",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "build": {
+    "appId": "ch.capitales.quiz",
+    "productName": "Capitales",
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "linux": {
+      "target": ["AppImage", "tar.gz"],
+      "category": "Game",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "directories": {
+      "output": "release"
+    }
+  },
+  "dependencies": {
+    "@types/d3-geo": "latest",
+    "@types/topojson-client": "latest",
+    "d3-geo": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "sql.js": "latest",
+    "topojson-client": "latest",
+    "world-atlas": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@types/sql.js": "latest",
+    "@vitejs/plugin-react": "latest",
+    "concurrently": "latest",
+    "electron": "latest",
+    "electron-builder": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vitest": "latest",
+    "wait-on": "latest"
+  }
+}
