@@ -58,12 +58,32 @@ jobs:
           if-no-files-found: error
 
   # ---- ChatGPT version: maintained in ChatGPT/ -------------------------------
-  # Reserved for the ChatGPT version. Replace this step with its online build,
-  # and upload the files to serve at /ChatGPT/ as an artifact named site-chatgpt.
+  # Vite emits relative URLs for scripts, styles and sql.js WebAssembly, so the
+  # build runs from the /ChatGPT/ sub-folder without a server-side application.
   chatgpt:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ChatGPT
     steps:
-      - run: echo "The ChatGPT version has no online build in this workflow yet."
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ChatGPT/package-lock.json
+      - run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - run: npm run build
+      - run: |
+          mkdir -p ../site-chatgpt
+          cp -r dist/. ../site-chatgpt/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: site-chatgpt
+          path: site-chatgpt
+          if-no-files-found: error
 
   # ---- Shared: landing page and deployment ----------------------------------
   deploy:

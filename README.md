@@ -7,7 +7,7 @@ A capital-cities quiz, built in two versions to compare what different AI assist
 | Version | Play | Download | Source and technical notes |
 | --- | --- | --- | --- |
 | Claude | [Play](https://iago-swi.github.io/capitales/Claude/) | [Releases](https://github.com/iago-swi/capitales/releases?q=claude) | [Claude/](Claude/) |
-| ChatGPT | | | [chatgpt/](chatgpt/) |
+| ChatGPT | [Play](https://iago-swi.github.io/capitales/ChatGPT/) | [Releases](https://github.com/iago-swi/capitales/releases?q=chatgpt) | [ChatGPT/](ChatGPT/) |
 
 The landing page links to every version that can be played online. Each version is self-contained in its own folder, with its own README.
 
@@ -21,9 +21,9 @@ Capitales in two modes, in English and French, on 193 countries drawn offline fr
 
 ## ChatGPT version
 
-<!-- Written by the ChatGPT assistant: screenshot and short description. -->
+The ChatGPT version asks ten multiple-choice questions from a catalogue of 195 countries. Each question fits the selected country's outline into the map and marks the capital in amber; choose the city from four answers, then try to reach the top ten stored in SQLite on the device. The interface switches between English and French. [Play the ChatGPT version](https://iago-swi.github.io/capitales/ChatGPT/) · [How to play and technical notes](ChatGPT/README.md)
 
-See [chatgpt/](chatgpt/).
+![ChatGPT version in play: a country outline with its capital marked and four city choices](ChatGPT/screenshot.jpg)
 
 ## Background
 
@@ -36,7 +36,7 @@ Each version has its own version number. Every change a player can notice is rec
 | Version | Changelog | Tags |
 | --- | --- | --- |
 | Claude | [Claude/CHANGELOG.md](Claude/CHANGELOG.md) | `claude-vX.Y.Z` |
-| ChatGPT | ChatGPT/CHANGELOG.md | `chatgpt-vX.Y.Z` |
+| ChatGPT | [ChatGPT/CHANGELOG.md](ChatGPT/CHANGELOG.md) | `chatgpt-vX.Y.Z` |
 
 [VERSIONING.md](VERSIONING.md) explains how a version is numbered and published.
 
@@ -45,7 +45,7 @@ Each version has its own version number. Every change a player can notice is rec
 ```text
 capitales/
 |-- Claude/        # version built with Claude
-|-- chatgpt/       # version built with ChatGPT
+|-- ChatGPT/       # version built with ChatGPT
 |-- .github/       # workflows: publish a release for each version tag, and the site on GitHub Pages
 |-- index.html     # landing page, published at https://iago-swi.github.io/capitales/
 |-- README.md

@@ -2,7 +2,7 @@
   "name": "capitales",
   "private": true,
   "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "A world capitals map quiz for browsers, Windows, and Linux",
   "author": "Philippe Noth",
   "main": "electron/main.cjs",
@@ -31,7 +31,10 @@
       ]
     },
     "linux": {
-      "target": ["AppImage", "tar.gz"],
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ],
       "category": "Game",
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },

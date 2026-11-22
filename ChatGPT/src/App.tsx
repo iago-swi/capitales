@@ -6,6 +6,7 @@ import { getHighScores, openDatabase, qualifiesForHighScore, saveScore, type Hig
 import { capitalName, copy, countryName, type Language } from './i18n'
 
 const ROUND_LENGTH = 10
+const VERSION = '1.0.1'
 type View = 'welcome' | 'game' | 'name' | 'scores'
 
 export default function App() {
@@ -51,7 +52,7 @@ export default function App() {
   </main>
 
   if (view === 'welcome') return <main className="welcome">
-    <div className="welcome-actions"><button className="text-button" onClick={() => setView('scores')}>{text.highScores}</button><LanguageButton /></div><div className="globe-mark" aria-hidden="true"><span>●</span></div><p className="eyebrow">{text.fieldTest} · {countries.length} {text.countries}</p><h1>{text.titleA}<br /><em>{text.titleB}</em></h1><p className="intro">{text.intro}</p><button className="primary" onClick={begin}>{text.begin} <span>→</span></button><div className="welcome-meta"><span>{text.bestScore} <strong>{scores[0]?.score ?? 0}/{ROUND_LENGTH}</strong></span><span>{platform === 'win32' ? text.windowsEdition : platform === 'linux' ? text.linuxEdition : text.browserEdition} · SQLite</span></div>
+    <div className="welcome-actions"><button className="text-button" onClick={() => setView('scores')}>{text.highScores}</button><LanguageButton /></div><div className="globe-mark" aria-hidden="true"><span>●</span></div><p className="eyebrow">{text.fieldTest} · {countries.length} {text.countries}</p><h1>{text.titleA}<br /><em>{text.titleB}</em></h1><p className="intro">{text.intro}</p><button className="primary" onClick={begin}>{text.begin} <span>→</span></button><div className="welcome-meta"><span>{text.bestScore} <strong>{scores[0]?.score ?? 0}/{ROUND_LENGTH}</strong></span><span>Version {VERSION} · {platform === 'win32' ? text.windowsEdition : platform === 'linux' ? text.linuxEdition : text.browserEdition} · SQLite</span></div>
   </main>
 
   const correct = answer === question.country.capital

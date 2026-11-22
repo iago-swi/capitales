@@ -1,7 +1,5 @@
 # Capitales — Project Guide
 
-[French documentation](PROJECT_GUIDE_FR.md)
-
 This document explains how the Capitales project works, how to run and build it, where its data is stored, and how to extend it safely.
 
 ## 1. What the project is
@@ -44,7 +42,7 @@ The interface can be switched between English and French at any time with the fl
 ## 3. Project layout
 
 ```text
-Capitales/
+ChatGPT/
 ├── electron/
 │   ├── main.cjs             Windows process and SQLite-file persistence
 │   └── preload.cjs          Safe bridge between React and Electron
@@ -132,8 +130,8 @@ npm run build:windows
 
 The generated files are written to `release/`:
 
-- `Capitales Setup 0.1.0.exe`: standard one-click installer.
-- `Capitales 0.1.0.exe`: portable application.
+- `Capitales Setup 1.0.1.exe`: standard one-click installer.
+- `Capitales 1.0.1.exe`: portable application.
 - `win-unpacked/Capitales.exe`: unpacked development output.
 
 The version and product name come from `package.json`. Increase `version` before making a new public release.
@@ -149,14 +147,14 @@ npm run build:linux
 This creates an x64 AppImage and a portable `.tar.gz` archive in `release/`. Make the AppImage executable before launching it:
 
 ```bash
-chmod +x Capitales-0.1.0-x86_64.AppImage
-./Capitales-0.1.0-x86_64.AppImage
+chmod +x Capitales-1.0.1-x86_64.AppImage
+./Capitales-1.0.1-x86_64.AppImage
 ```
 
 For an archive cross-built on Windows, extract it and restore the Linux executable bits before launching:
 
 ```bash
-tar -xzf Capitales-0.1.0-x64.tar.gz
+tar -xzf Capitales-1.0.1-x64.tar.gz
 cd linux-unpacked
 chmod +x capitales chrome-sandbox chrome_crashpad_handler
 ./capitales
