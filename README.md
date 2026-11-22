@@ -15,7 +15,9 @@ The landing page links to every version that can be played online. Each version 
 
 Capitales in two modes, in English and French, on 193 countries drawn offline from Natural Earth data. In **Name**, the marker is on the capital and you pick the city out of four. In **Place**, the city is named and you put the marker on the map; distance is measured against the size of the map on screen, so being 57 km out in Switzerland is not scored like 57 km out in Canada. Ten questions a game, 15 seconds each, streak multipliers, and a top ten for each mode, kept in the browser. It also comes as one offline HTML file and as Windows, Linux and Android apps. [Play the Claude version](https://iago-swi.github.io/capitales/Claude/) · [How to play and technical notes](Claude/README.md)
 
-![The Claude version in play: the outline of Sweden with a marker on Stockholm, and four cities to choose from](Claude/screenshot.jpg)
+| Name | Place |
+| --- | --- |
+| ![Name mode: the outline of Sweden with a marker on Stockholm, and four cities to choose from](Claude/screenshot.jpg) | ![Place mode: a guess 61 km from Baghdad, inside the red target circle, scoring 157 points](Claude/docs/screenshots/place.jpg) |
 
 ## ChatGPT version
 

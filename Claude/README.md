@@ -8,7 +8,9 @@ top-ten list for each mode. Remake of a Visual Basic game from about 1996.
 
 **[Play it in your browser](https://iago-swi.github.io/capitales/Claude/)** · [What changed in each version](CHANGELOG.md)
 
-![Capitales in play: the outline of Sweden with a marker on Stockholm, and four cities to choose from](screenshot.jpg)
+| Name | Place |
+| --- | --- |
+| ![Name mode: the outline of Sweden with a marker on Stockholm, and four cities to choose from](screenshot.jpg) | ![Place mode: a guess 61 km from Baghdad, inside the red target circle, scoring 157 points](docs/screenshots/place.jpg) |
 
 ## Run it
 
@@ -26,8 +28,6 @@ stores data per address.
 **Name** — the marker is on the capital; pick the right city out of four.
 
 **Place** — the city is named; click or tap the map where you think it is.
-
-![Place mode: the guess, the real capital, the distance between them, and the red target circle](docs/screenshots/placing.jpg)
 
 | | Name | Place |
 | --- | --- | --- |
