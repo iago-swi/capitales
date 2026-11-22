@@ -548,6 +548,7 @@
         <button class="foot-link mono" onclick={openBoard}>
           {msg('viewScores')}
         </button>
+        <span class="mono version">Version {__APP_VERSION__}</span>
       {/if}
     {/if}
   </footer>
@@ -652,6 +653,12 @@
     text-decoration: underline;
     text-underline-offset: 3px;
     color: var(--paper);
+  }
+
+  /* Last on the line and the quietest thing on it: there to be found, not read. */
+  .version {
+    font-size: 0.62rem;
+    opacity: 0.55;
   }
 
   .board-page {

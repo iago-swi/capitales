@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { appVersion } from '../../version';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..', '..');
@@ -16,6 +17,7 @@ export default defineConfig({
     // at runtime, so the file works from a USB stick, an email attachment, or
     // a file:// URL with no server at all.
     viteSingleFile(),
+    appVersion(),
   ],
   resolve: {
     alias: [
