@@ -23,36 +23,34 @@ async function persist() {
   else localStorage.setItem(browserKey, bytesToBase64(bytes))
 }
 
-export async function openDatabase() {
+let opening: Promise<void> | undefined
+export function openDatabase() {
+  return opening ??= initialize()
+}
+
+async function initialize() {
   const SQL = await initSqlJs({ locateFile: () => wasmUrl })
   const bytes = await persistedBytes()
   database = bytes ? new SQL.Database(bytes) : new SQL.Database()
-  database.run(`
-    CREATE TABLE IF NOT EXISTS scores (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL DEFAULT 'Anonymous',
-      score INTEGER NOT NULL,
-      total INTEGER NOT NULL,
-      played_at TEXT NOT NULL
-    );
-  `)
-  const columns = database.exec('PRAGMA table_info(scores)')[0]?.values.map((row) => String(row[1])) ?? []
-  if (!columns.includes('name')) database.run("ALTER TABLE scores ADD COLUMN name TEXT NOT NULL DEFAULT 'Anonymous'")
+  // The original scores table remains an archive of points out of ten.
+  database.run(`CREATE TABLE IF NOT EXISTS mode_scores (
+    id INTEGER PRIMARY KEY, mode TEXT NOT NULL, name TEXT NOT NULL, score INTEGER NOT NULL
+  )`)
   await persist()
 }
 
-export type HighScore = { name: string; score: number; total: number; playedAt: string }
-export async function saveScore(name: string, score: number, total: number) {
-  database.run('INSERT INTO scores (name, score, total, played_at) VALUES (?, ?, ?, ?)', [name.trim().slice(0, 24), score, total, new Date().toISOString()])
-  database.run('DELETE FROM scores WHERE id NOT IN (SELECT id FROM scores ORDER BY score DESC, played_at ASC LIMIT 10)')
+export type HighScore = { id: number; name: string; score: number }
+type Mode = import('./scoring').Mode
+export function getHighScores(mode: Mode): HighScore[] {
+  const query = database.exec('SELECT id,name,score FROM mode_scores WHERE mode=? ORDER BY score DESC,id LIMIT 10',[mode])
+  return (query[0]?.values ?? []).map(([id,name,score]) => ({id:Number(id),name:String(name),score:Number(score)}))
+}
+export async function saveScore(mode: Mode, name: string, score: number) {
+  database.run('INSERT INTO mode_scores(mode,name,score) VALUES (?,?,?)',[mode,name.slice(0,24),score])
+  database.run('DELETE FROM mode_scores WHERE mode=? AND id NOT IN (SELECT id FROM mode_scores WHERE mode=? ORDER BY score DESC,id LIMIT 10)',[mode,mode])
   await persist()
 }
-
-export function getHighScores(): HighScore[] {
-  const result = database.exec('SELECT name, score, total, played_at FROM scores ORDER BY score DESC, played_at ASC LIMIT 10')[0]
-  return result ? result.values.map((row) => ({ name:String(row[0]), score:Number(row[1]), total:Number(row[2]), playedAt:String(row[3]) })) : []
-}
-export function qualifiesForHighScore(score: number) {
-  const scores = getHighScores()
-  return scores.length < 10 || score >= scores[scores.length - 1].score
+export async function clearScores(mode: Mode) {
+  database.run('DELETE FROM mode_scores WHERE mode=?',[mode])
+  await persist()
 }

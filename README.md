@@ -21,9 +21,11 @@ Capitales in two modes, in English and French, on 193 countries drawn offline fr
 
 ## ChatGPT version
 
-The ChatGPT version asks ten multiple-choice questions from a catalogue of 195 countries. Each question fits the selected country's outline into the map and marks the capital in amber; choose the city from four answers, then try to reach the top ten stored in SQLite on the device. The interface switches between English and French. [Play the ChatGPT version](https://iago-swi.github.io/capitales/ChatGPT/) · [How to play and technical notes](ChatGPT/README.md)
+Name the city marked on the map or tap where a named capital belongs. Each expedition draws ten different countries from a catalogue of 195, with 15 seconds per question and a separate local top ten for each mode. [Play online](https://iago-swi.github.io/capitales/ChatGPT/) · [Technical notes](ChatGPT/README.md)
 
-![ChatGPT version in play: a country outline with its capital marked and four city choices](ChatGPT/screenshot.jpg)
+| Name | Place |
+| --- | --- |
+| ![Name mode with four city choices](ChatGPT/screenshot.jpg) | ![Place mode showing the guess, target and distance](ChatGPT/place.jpg) |
 
 ## Background
 

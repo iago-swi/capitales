@@ -12,15 +12,7 @@ Capitales is a world-capitals quiz available in three forms:
 
 All editions share the same React application, game rules, country data, map rendering, translations, and SQLite schema. Electron provides the Windows and Linux application shells.
 
-During each game:
-
-1. The application selects one of 195 sovereign states.
-2. It displays the country's outline without its name.
-3. A yellow beacon marks the capital's geographic coordinates.
-4. The player chooses among four capital names.
-5. A game lasts ten questions.
-6. A qualifying top-ten score prompts the player for a name.
-7. The player name and score are stored in SQLite.
+A run contains ten distinct countries and gives 15 seconds per question. Players identify a marked capital in Name or place the named capital in Place. Each mode has its own SQLite top ten.
 
 The interface can be switched between English and French at any time with the flag button.
 
@@ -130,8 +122,8 @@ npm run build:windows
 
 The generated files are written to `release/`:
 
-- `Capitales Setup 1.0.1.exe`: standard one-click installer.
-- `Capitales 1.0.1.exe`: portable application.
+- `Capitales Setup 2.0.0.exe`: standard one-click installer.
+- `Capitales 2.0.0.exe`: portable application.
 - `win-unpacked/Capitales.exe`: unpacked development output.
 
 The version and product name come from `package.json`. Increase `version` before making a new public release.
@@ -147,14 +139,14 @@ npm run build:linux
 This creates an x64 AppImage and a portable `.tar.gz` archive in `release/`. Make the AppImage executable before launching it:
 
 ```bash
-chmod +x Capitales-1.0.1-x86_64.AppImage
-./Capitales-1.0.1-x86_64.AppImage
+chmod +x Capitales-2.0.0-x86_64.AppImage
+./Capitales-2.0.0-x86_64.AppImage
 ```
 
 For an archive cross-built on Windows, extract it and restore the Linux executable bits before launching:
 
 ```bash
-tar -xzf Capitales-1.0.1-x64.tar.gz
+tar -xzf Capitales-2.0.0-x64.tar.gz
 cd linux-unpacked
 chmod +x capitales chrome-sandbox chrome_crashpad_handler
 ./capitales
@@ -228,45 +220,9 @@ Consequences:
 - Changing hostname, protocol, or port creates a different storage area.
 - Browser, Windows, and Linux scores are independent unless their database files are transferred manually.
 
-### Database schema
+### Database schema and rankings
 
-The application creates this table:
-
-```sql
-CREATE TABLE scores (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL DEFAULT 'Anonymous',
-  score INTEGER NOT NULL,
-  total INTEGER NOT NULL,
-  played_at TEXT NOT NULL
-);
-```
-
-Field meanings:
-
-| Field | Meaning |
-| --- | --- |
-| `id` | Internal unique identifier |
-| `name` | Player name, limited by the interface to 24 characters |
-| `score` | Number of correct answers |
-| `total` | Number of questions in that game, currently 10 |
-| `played_at` | ISO 8601 timestamp used to resolve tied scores |
-
-Older databases created before player names were introduced are migrated automatically. The application checks `PRAGMA table_info(scores)` and adds the `name` column if necessary.
-
-### Top-ten rules
-
-A score qualifies when:
-
-- Fewer than ten scores have been stored, or
-- The score is equal to or greater than the current tenth-place score.
-
-After saving a qualifying score, the table is ordered by:
-
-1. Highest score first.
-2. Earliest achievement first when scores are tied.
-
-Rows outside the best ten are deleted. A blank player name is saved as `Anonymous` or `Anonyme`, according to the selected interface language.
+Version 2 creates `mode_scores(id, mode, name, score)`. The original `scores` table remains available for historical inspection. The game ranks the ten highest positive point totals within each mode. Earlier entries win ties. Once a board is full, a new entry must beat tenth place.
 
 ### Inspecting the Windows database
 
@@ -283,12 +239,14 @@ Then:
 ```sql
 .headers on
 .mode column
-SELECT * FROM scores ORDER BY score DESC, played_at ASC;
+SELECT mode, name, score FROM mode_scores ORDER BY mode, score DESC, id;
 ```
 
 Avoid editing the database while the game is running because the application may overwrite the file with its in-memory copy.
 
 ### Resetting scores
+
+Use **Clear list** on the selected mode’s leaderboard to clear just that board. The steps below reset the entire database, including the archive.
 
 Windows edition:
 
@@ -309,56 +267,11 @@ Deleting either database permanently removes its high scores unless a backup exi
 
 ## 7. Game and scoring logic
 
-Question generation lives in `src/game.ts`.
-
-- The current country is excluded from the next random selection.
-- Every question has four unique choices.
-- The correct capital is always included.
-- Capitals from the same geographic region are preferred as distractors.
-- Other regions fill any remaining answer positions.
-- Choices are shuffled before display.
-
-The current game state lives in React inside `src/App.tsx`. The principal views are:
-
-```text
-welcome → game → name entry (if qualified) → high scores
-                 └──────────────────────────→ high scores (if not qualified)
-```
-
-The score is incremented immediately when the correct choice is selected. Once an answer is selected, the choices are locked until the player advances.
+`game.ts` shuffles the catalogue without replacement. Name draws regional distractors first and filters alternative capitals. `scoring.ts` computes the award once per answer. An instant correct answer earns 200 points, rising to 400 on the fifth consecutive hit. In Place, speed pays only inside the target. At twice its radius the award reaches zero. Beyond it, the penalty grows to a maximum of 100 points. An empty placement costs 100.
 
 ## 8. Country outlines and capital positions
 
-Country metadata is stored in `src/countries.json` and exposed through `src/data.ts`. The catalogue contains 195 sovereign states. Each entry contains:
-
-```ts
-type Country = {
-  id: number
-  name: string
-  nameFr: string
-  capital: string
-  longitude: number
-  latitude: number
-  region: string
-}
-```
-
-The numeric `id` matches the country identifier in `world-atlas/countries-10m.json`. This detailed resolution includes microstates.
-
-`src/CountryMap.tsx` performs the rendering:
-
-1. `topojson-client` extracts the requested country as GeoJSON.
-2. D3's Mercator projection fits that geometry into the SVG viewport.
-3. The same projection converts the capital's longitude and latitude into SVG coordinates.
-4. The country path and animated capital beacon are drawn in one SVG.
-
-Longitude must come before latitude when passing coordinates to D3:
-
-```ts
-projection([country.longitude, country.latitude])
-```
-
-Reversing those values produces an incorrect marker position.
+The renderer fits a longitude-rotated Mercator projection to the polygon containing the capital (or the nearest polygon), surrounding islands within a distance threshold, and the capital itself. This keeps places such as metropolitan France readable, and centres the longitude seam opposite the capital for Pacific countries. Taps are transformed from screen coordinates into the SVG frame and then inverted to longitude and latitude. Haversine distance uses a radius of 6,371 km. The target circle uses 15% of the farthest corner distance, with a 25 km floor for microstates.
 
 ## 9. English and French localization
 
@@ -433,25 +346,9 @@ Before releasing, manually verify:
 
 The generated Windows executables use electron-builder's normal packaging process but are not signed with a purchased code-signing certificate. Windows SmartScreen may therefore warn users when the application is downloaded onto another computer.
 
-## 13. Current limitations and sensible next improvements
+## 13. Current limitations
 
-Current limitations:
-
-- Browser and Windows high scores do not synchronize.
-- Browser SQLite persistence uses local storage, which is simple but less robust than IndexedDB for large databases.
-- The Windows package uses Electron's default application icon.
-- Fonts are requested from Google Fonts; fallback fonts are used without internet access.
-- There is no sound, difficulty selector, continent selector, or timed mode.
-
-Useful next improvements:
-
-1. Periodically validate changes to capitals and official country names.
-2. Add continent and difficulty filters.
-3. Bundle fonts and a custom application icon for fully polished offline use.
-4. Move browser persistence from local storage to IndexedDB or OPFS.
-5. Add database export/import for transferring scores.
-6. Add end-to-end tests for the complete ten-question and leaderboard flow.
-7. Add a timer, streak bonuses, and accessibility options.
+Rankings stay on the current browser origin or in the desktop profile. National outlines and capital positions follow the bundled catalogue and atlas.
 
 ## 14. Useful commands
 
@@ -471,7 +368,7 @@ Useful next improvements:
 
 - Change application version: `package.json` → `version`.
 - Change Windows product name: `package.json` → `build.productName`.
-- Change game length: `ROUND_LENGTH` in `src/App.tsx`.
+- Ten-question dealing lives in `src/game.ts`. The clock and points live in `src/scoring.ts`.
 - Change country catalogue: `src/countries.json` and its type in `src/data.ts`.
 - Change translations: `src/i18n.ts`.
 - Change high-score behavior or schema: `src/database.ts`.

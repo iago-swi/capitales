@@ -79,6 +79,7 @@ jobs:
       - run: |
           mkdir -p ../site-chatgpt
           cp -r dist/. ../site-chatgpt/
+          cp place.jpg ../site-chatgpt/
       - uses: actions/upload-artifact@v7
         with:
           name: site-chatgpt

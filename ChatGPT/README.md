@@ -1,24 +1,24 @@
 # Capitales — ChatGPT version
 
-A world-capitals map quiz built with ChatGPT. Each question shows a country's outline and the exact location of its capital; choose the city from four answers. A game has ten questions, covers a catalogue of 195 countries, and can be played in English or French.
+Name the city marked on the map or tap where a named capital belongs. Each expedition draws ten different countries from a catalogue of 195, with 15 seconds per question and a separate local top ten for each mode.
 
 **[Play it in your browser](https://iago-swi.github.io/capitales/ChatGPT/)** · [What changed in each version](CHANGELOG.md)
 
-![Capitales in play: the outline of a country, its capital marked in amber, and four city choices](screenshot.jpg)
+| Name | Place |
+| --- | --- |
+| ![Name mode with four city choices](screenshot.jpg) | ![Place mode showing the guess, target and distance](place.jpg) |
 
 ## How to play
 
-1. Select **Begin expedition**.
-2. Study the country outline and the amber marker showing its capital.
-3. Choose one of the four city names.
-4. Continue through all ten questions. Each correct answer adds one point.
-5. If the result reaches the local top ten, enter a name to save it.
+Select **Name** or **Place**, then press **Enter** or **Begin expedition**. Your mode and language choices are remembered.
 
-The flag button switches between English and French at any time. **High scores** opens the ten best results stored for this edition in the current browser or desktop profile.
+- **Name:** identify the coral marker from four cities. Click a choice or press A–D or 1–4. A correct answer earns 100 points plus up to 100 for speed. Consecutive correct answers raise the multiplier by 0.25 to a maximum of ×2. A wrong answer or timeout breaks the streak.
+- **Place:** click or tap once to place the named capital. The dashed red ring marks the target during the reveal. The first 25 km earn full accuracy. Points decrease to zero at twice the target radius, then fall as low as −100. On-target guesses earn the speed bonus and extend your streak. A timeout costs 100.
+- **High scores:** a positive result qualifies if a slot is open or the score beats tenth place. Clear the selected mode’s list from its leaderboard.
 
 ## Downloads and local use
 
-Published versions and available files are on the [GitHub Releases page](https://github.com/iago-swi/capitales/releases?q=chatgpt). Source archives are attached automatically by GitHub. No Windows or Linux package was produced for version 1.0.1.
+Published versions and available files are on the [GitHub Releases page](https://github.com/iago-swi/capitales/releases?q=chatgpt). Source archives are attached automatically by GitHub. The browser build is available as a ZIP.
 
 To run the browser edition locally:
 
@@ -53,7 +53,7 @@ The project also defines `build:windows`, `build:linux`, and `build:linux:archiv
 | Path | Responsibility |
 | --- | --- |
 | `src/App.tsx` | Welcome, quiz, name entry and leaderboard screens; ten-round flow and scoring |
-| `src/CountryMap.tsx` | Converts a country from TopoJSON, fits it into the SVG and projects the capital marker |
+| `src/CountryMap.tsx` | Draws the fitted SVG, handles pointer input and displays placement feedback |
 | `src/countries.json` | 195 country records with map ID, names, capital, coordinates and region |
 | `src/game.ts` | Chooses a country, prefers same-region distractors and shuffles four unique answers |
 | `src/database.ts` | Creates, migrates, reads and persists the SQLite high-score table |
@@ -62,29 +62,14 @@ The project also defines `build:windows`, `build:linux`, and `build:linux:archiv
 | `electron/` | Desktop window and the restricted database load/save bridge |
 | `PROJECT_GUIDE.md` | Database paths, schema, packaging, localization and extension guide |
 
-### Country data and map drawing
+### Geography, rules and persistence
 
-`countries.json` contains 195 records. Each numeric ID matches a geometry in `world-atlas/countries-10m.json`. `CountryMap.tsx` converts the selected TopoJSON geometry to GeoJSON, uses a Mercator projection to fit it inside an 800 × 480 SVG, then passes the same projection the capital's longitude and latitude. The outline and marker therefore use one coordinate system.
+`src/mapFrame.ts` rotates a Mercator projection around the capital’s longitude and fits the local landmass and nearby islands. This keeps remote territories from overwhelming the map and moves the projection seam away from the capital. The same projection draws the SVG, inverts pointer positions and draws the geographic target circle.
 
-### Questions and scoring
+`src/scoring.ts` uses haversine distance with a 6,371 km Earth radius. The farthest of the four frame corners sets the reach. The target is 15% of reach with a 25 km minimum, including on microstate maps. Points are rounded once for each question. A game total may be negative.
 
-`createQuestion` excludes the country used by the previous question. It starts the distractor pool with other countries from the same region, fills any remaining places from other regions, and shuffles the correct capital with three distractors. A correct answer is worth one point. The choices lock after the first selection, and a game ends after ten questions.
-
-### Score storage
-
-`sql.js` runs SQLite in WebAssembly. The browser exports the database as bytes, encodes them as Base64 and stores them under `capitales.sqlite.base64` in `localStorage`. This keeps all names and scores on the device and makes storage specific to the exact browser origin. Electron writes the same serialized database to `capitales.sqlite` in its user-data directory. Only the ten highest scores are retained; earlier scores win ties.
-
-### Browser and desktop builds
-
-`npm run build` type-checks the application and creates `dist/`. Vite uses relative asset paths, including the emitted `sql.js` WebAssembly file, so the build works from the `/capitales/ChatGPT/` GitHub Pages sub-folder. Electron loads that same build for packaged Windows and Linux editions and exposes only database load/save operations to the renderer.
+`src/database.ts` creates a separate SQLite table for points and mode. Existing scores out of ten stay in the original table. Browser storage uses Base64 database bytes under `capitales.sqlite.base64`. Desktop editions save the same database to a file. See the [project guide](PROJECT_GUIDE.md) for locations and packaging.
 
 ### Testing
 
-Run:
-
-```powershell
-npm test
-npm run build
-```
-
-For version 1.0.1, the unit tests, production build, GitHub Pages sub-folder build, a complete ten-question browser game, score persistence after reload, desktop-width layout and approximately 390-pixel mobile layout were checked. Windows and Linux packages were not built or launched, and the game was not tested on a physical touch device. More implementation details and manual verification steps are in [PROJECT_GUIDE.md](PROJECT_GUIDE.md).
+Run `npm test` and `npm run build`. Tests cover scoring examples, streaks, signs, leaderboard cutoffs, question selection and map projection for every capital. The Chromium check in `tools/check-game.cjs` exercises complete games, migration, touch input and separate rankings. Native Windows and Linux packages and physical touch devices were outside this release’s test run.
