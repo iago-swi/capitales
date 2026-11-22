@@ -46,8 +46,11 @@ jobs:
           ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
       - run: npm run build:single
       - run: |
-          mkdir -p ../site-claude
+          mkdir -p ../site-claude/docs/screenshots
           cp apps/single/dist/index.html ../site-claude/index.html
+          # The landing page shows both modes: screenshot.jpg (copied by the
+          # deploy job) and this one, at the same path as in the repository.
+          cp docs/screenshots/place.jpg ../site-claude/docs/screenshots/place.jpg
       - uses: actions/upload-artifact@v7
         with:
           name: site-claude

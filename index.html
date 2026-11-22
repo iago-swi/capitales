@@ -27,6 +27,8 @@
   a.card:hover,a.card:focus-visible{transform:translateY(-3px);background:rgba(237,230,214,.09);border-color:var(--brass);outline:none}
   .card img,.card .blank{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:9px;margin-bottom:18px;
     border:1px solid var(--line);background:#07101d}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px}
+  .shots img{margin-bottom:0;border-radius:7px}
   .card .blank{display:grid;place-items:center;color:var(--sage);opacity:.5;font:600 12px ui-monospace,Consolas,monospace;letter-spacing:.2em;text-transform:uppercase}
   .card h2{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:30px;margin:0 8px 6px}
   .card p{font-size:14px;line-height:1.5;margin:0 8px;opacity:.75}
@@ -44,7 +46,10 @@
   <div class="grid">
     <!-- Claude version: maintained by the Claude assistant -->
     <a class="card" href="Claude/">
-      <img src="Claude/screenshot.jpg" width="800" height="500" alt="The Claude version in play: the outline of Sweden with a marker on Stockholm, and four cities to choose from">
+      <div class="shots">
+        <img src="Claude/screenshot.jpg" width="800" height="500" alt="Name mode: the outline of Sweden with a marker on Stockholm, and four cities to choose from">
+        <img src="Claude/docs/screenshots/place.jpg" width="800" height="500" alt="Place mode: a guess 61 km from Baghdad, inside the red target circle, scoring 157 points">
+      </div>
       <h2>Claude version</h2><p>Two modes, Name and Place. In Place, distance is scored against the size of the map, so 57 km out costs more in Switzerland than in Canada. Ten questions a game, streak multipliers, and a top ten for each mode, kept in your browser.</p><span class="tag">Play</span><span class="ver">Version 1.0.3</span>
     </a>
     <!-- ChatGPT version: its card is written by the ChatGPT assistant -->
