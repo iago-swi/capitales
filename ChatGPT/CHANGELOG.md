@@ -11,9 +11,6 @@ Changes to the ChatGPT version of Capitales, newest first. Each version is tagge
 ### Changed
 
 - The start screen now shows the version number.
-
-### Documentation
-
 - Added a compact gameplay screenshot, release notes, online play and download links, and detailed technical notes.
 
 ## [1.0.0] - 2026-09-19
