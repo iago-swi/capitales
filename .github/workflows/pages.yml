@@ -1,0 +1,117 @@
+# Publishes https://iago-swi.github.io/capitales/ on every push to main.
+#
+#   /                 the root index.html (landing page)
+#   /Claude/          the Claude version's online build, and its screenshot.jpg
+#   /ChatGPT/         the ChatGPT version's online build, and its screenshot.jpg
+#
+# Each version builds in its own job and is maintained by its own assistant. A job
+# that is missing or fails does not stop the other version or the landing page
+# from being published: the assemble job runs whatever the build jobs produced.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # ---- Claude version: maintained in Claude/ ---------------------------------
+  # The single-file build: one index.html with every script, style and picture
+  # inlined, and scores in the browser's localStorage. No absolute paths, so it
+  # runs from the /Claude/ sub-folder as it is.
+  claude:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Claude
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: Claude/package-lock.json
+      - run: npm ci
+        env:
+          # The desktop shell's runtime is not needed for the browser build.
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - run: npm run build:single
+      - run: |
+          mkdir -p ../site-claude
+          cp apps/single/dist/index.html ../site-claude/index.html
+      - uses: actions/upload-artifact@v7
+        with:
+          name: site-claude
+          path: site-claude
+          if-no-files-found: error
+
+  # ---- ChatGPT version: maintained in ChatGPT/ -------------------------------
+  # Reserved for the ChatGPT version. Replace this step with its online build,
+  # and upload the files to serve at /ChatGPT/ as an artifact named site-chatgpt.
+  chatgpt:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "The ChatGPT version has no online build in this workflow yet."
+
+  # ---- Shared: landing page and deployment ----------------------------------
+  deploy:
+    needs: [claude, chatgpt]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Get the Claude build
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          name: site-claude
+          path: build/Claude
+
+      - name: Get the ChatGPT build
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          name: site-chatgpt
+          path: build/ChatGPT
+
+      - name: Assemble the site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp index.html _site/
+          for v in Claude ChatGPT; do
+            if [ -d "build/$v" ] && [ -n "$(ls -A "build/$v")" ]; then
+              mkdir -p "_site/$v"
+              cp -r "build/$v/." "_site/$v/"
+              echo "Publishing /$v/"
+            else
+              echo "::warning::No build for $v; /$v/ is not published this time"
+            fi
+            # The landing page shows each version's screenshot, built or not.
+            src="$(find . -maxdepth 2 -ipath "./$v/screenshot.jpg" -not -path './_site/*' | head -n 1)"
+            if [ -n "$src" ]; then
+              mkdir -p "_site/$v"
+              cp "$src" "_site/$v/screenshot.jpg"
+            fi
+          done
+          find _site -maxdepth 2 | sort
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v5

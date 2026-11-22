@@ -1,30 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Capitales — two versions</title>
-    <style>
-      :root { color-scheme: dark; font-family: system-ui, sans-serif; }
-      body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #101827; color: #f8fafc; }
-      main { width: min(760px, calc(100% - 2rem)); text-align: center; }
-      h1 { font-size: clamp(2.5rem, 8vw, 5rem); margin-bottom: .4rem; }
-      p { color: #cbd5e1; font-size: 1.1rem; }
-      .variants { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
-      a { padding: 2rem 1rem; border: 1px solid #334155; border-radius: 1rem; color: inherit; text-decoration: none; background: #1e293b; transition: transform .2s, border-color .2s; }
-      a:hover { transform: translateY(-3px); border-color: #38bdf8; }
-      strong { display: block; font-size: 1.5rem; margin-bottom: .4rem; }
-      span { color: #94a3b8; }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1>Capitales</h1>
-      <p>One game, built twice: try both and compare.</p>
-      <div class="variants">
-        <a href="claude/"><strong>Claude version</strong><span>Open this version</span></a>
-        <a href="chatgpt/"><strong>ChatGPT version</strong><span>Open this version</span></a>
-      </div>
-    </main>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1424">
+<link rel="icon" href="data:,">
+<title>Capitales</title>
+<style>
+  :root{--ink:#0a1424;--navy:#12233b;--paper:#ede6d6;--brass:#e0b24f;--sage:#9fb8a6;--line:rgba(237,230,214,.14)}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;padding:32px 16px;color:var(--paper);
+    font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:
+      linear-gradient(rgba(159,184,166,.05) 1px,transparent 1px) 0 0/48px 48px,
+      linear-gradient(90deg,rgba(159,184,166,.05) 1px,transparent 1px) 0 0/48px 48px,
+      radial-gradient(ellipse at 50% 0%,#1c3556 0%,var(--navy) 45%,var(--ink) 100%);
+    background-color:var(--ink)}
+  main{width:100%;max-width:880px}
+  .eyebrow{font:600 12px/1 ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin:0 0 18px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(52px,12vw,112px);line-height:.95;margin:0 0 20px;letter-spacing:-.02em}
+  h1 em{color:var(--brass)}
+  p.lede{font-size:18px;line-height:1.55;margin:0 0 34px;opacity:.9}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{display:block;padding:14px 14px 24px;border-radius:16px;text-decoration:none;color:inherit;
+    background:rgba(237,230,214,.05);border:1px solid var(--line);transition:transform .15s,background .15s,border-color .15s}
+  a.card:hover,a.card:focus-visible{transform:translateY(-3px);background:rgba(237,230,214,.09);border-color:var(--brass);outline:none}
+  .card img,.card .blank{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:9px;margin-bottom:18px;
+    border:1px solid var(--line);background:#07101d}
+  .card .blank{display:grid;place-items:center;color:var(--sage);opacity:.5;font:600 12px ui-monospace,Consolas,monospace;letter-spacing:.2em;text-transform:uppercase}
+  .card h2{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:30px;margin:0 8px 6px}
+  .card p{font-size:14px;line-height:1.5;margin:0 8px;opacity:.75}
+  .tag{display:inline-block;margin:16px 8px 0;padding:5px 12px;border-radius:99px;font-size:13px;font-weight:600;background:var(--brass);color:var(--ink)}
+  .ver{display:inline-block;margin:6px 0 0 8px;font-size:13px;opacity:.6;white-space:nowrap}
+  footer{margin-top:34px;font-size:13px;opacity:.6}
+  footer a{color:var(--brass)}
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">A capital-cities quiz · 193 countries</p>
+  <h1>Capi<em>tales</em></h1>
+  <p class="lede">Each question shows one country's outline. Name its capital from four cities, or place the capital yourself on the map, against a 15-second clock, in English or French. A remake of a Visual Basic game from about 1996. Each version below was built by a different AI assistant.</p>
+  <div class="grid">
+    <!-- Claude version: maintained by the Claude assistant -->
+    <a class="card" href="Claude/">
+      <img src="Claude/screenshot.jpg" width="800" height="500" alt="The Claude version in play: the outline of Sweden with a marker on Stockholm, and four cities to choose from">
+      <h2>Claude version</h2><p>Two modes, Name and Place. In Place, distance is scored against the size of the map, so 57 km out costs more in Switzerland than in Canada. Ten questions a game, streak multipliers, and a top ten for each mode, kept in your browser.</p><span class="tag">Play</span><span class="ver">Version 1.0.3</span>
+    </a>
+    <!-- ChatGPT version: its card is written by the ChatGPT assistant -->
+    <div class="card">
+      <h2>ChatGPT version</h2>
+    </div>
+  </div>
+  <footer><a href="https://github.com/iago-swi/capitales">Source and documentation</a> and <a href="https://github.com/iago-swi/capitales/releases">release notes</a> on GitHub.</footer>
+</main>
+</body>
 </html>
