@@ -12,7 +12,7 @@ Published releases: <https://github.com/iago-swi/capitales/releases>
 ## Rules
 
 1. Every change to a game that a player can notice gets a new version, with a section in that folder's `CHANGELOG.md`. The change is finished when its release is published. Several changes pushed together are one version, numbered by the largest of them.
-   Documentation-only changes (a README, a screenshot) get no version. They are committed as usual and can be listed under `Documentation` in the next version's notes.
+   Documentation-only changes (a README, a screenshot) get no version, no tag and no release. They go through a pull request like every other change (see below) and can be listed under `Documentation` in the next version's notes.
 2. The version is `X.Y.Z`:
    - `Z` goes up when something is fixed or adjusted and nothing new is added: a bug fix, tuning, wording, visual polish.
    - `Y` goes up when the player gets something new: a feature, a screen, a mode, a control. `Z` returns to 0.
@@ -24,7 +24,21 @@ Published releases: <https://github.com/iago-swi/capitales/releases>
 
 ## Releasing a change
 
-1. Add a section at the top of the game's `CHANGELOG.md`, above the previous version:
+Every change reaches `main` through a branch and a pull request. Nothing is committed or pushed directly on `main`. `main` is never force-pushed, and existing history is not rewritten.
+
+When the owner says **"publish"**, do all the steps below. When the owner says **"open a pull request"**, stop after step 4 and give the link.
+
+1. Bring `main` up to date and create a branch from it:
+
+   ```bash
+   git switch main
+   git pull --ff-only
+   git switch -c release/claude-v1.1.0
+   ```
+
+   The branch is `release/<tag>` for a version (`release/claude-v1.1.0`, `release/chatgpt-v2.1.0`) and `docs/<short-name>` for a change to the documentation only (`docs/readme-screenshots`).
+
+2. For a version, add a section at the top of the game's `CHANGELOG.md`, above the previous version:
 
    ```markdown
    ## [1.1.0] - 2026-12-03
@@ -38,21 +52,35 @@ Published releases: <https://github.com/iago-swi/capitales/releases>
 
    Set the same number in the folder's `package.json` (and wherever else that game keeps it).
 
-2. Commit the changelog together with the change. Then fetch, rebase and push:
+3. Commit on the branch, the changelog together with the change, under the owner's Git identity. The message is plain and carries no attribution lines (no `Co-Authored-By`, no `Generated with`).
+
+4. Push the branch and open a pull request:
 
    ```bash
-   git pull --rebase
-   git push
+   git push -u origin release/claude-v1.1.0
+   gh pr create --base main --title "Capitales 1.1.0 (Claude): a few words" --body-file notes.md
    ```
 
-3. Tag the commit that contains the changelog entry, and push the tag on its own:
+   The title is the version number and a few words. The body is the changelog section for this version, in plain language for users. A documentation change has no version: its title and body say what changed.
+
+5. Merge it with a merge commit, not a squash and not a rebase:
 
    ```bash
+   gh pr merge --merge --delete-branch
+   ```
+
+   If `main` has moved and the pull request no longer merges, merge `main` into the branch and push it again.
+
+6. A documentation change ends here: no version, no tag, no release. For a version, tag the merge commit on `main` and push the tag on its own:
+
+   ```bash
+   git switch main
+   git pull --ff-only
    git tag -a claude-v1.1.0 -m "Capitales 1.1.0 (Claude)"
    git push origin claude-v1.1.0
    ```
 
-4. Pushing the tag starts the [Release workflow](.github/workflows/release.yml). It reads the section for that version from the changelog and publishes it as a GitHub release titled "Capitales 1.1.0 (Claude)". Then attach the downloadable builds:
+7. Pushing the tag starts the [Release workflow](.github/workflows/release.yml). It reads the section for that version from the changelog and publishes it as a GitHub release titled "Capitales 1.1.0 (Claude)". Then attach the downloadable builds:
 
    ```bash
    gh release upload claude-v1.1.0 path/to/index.html
@@ -61,7 +89,7 @@ Published releases: <https://github.com/iago-swi/capitales/releases>
 
 ## Correcting a release note
 
-Edit the changelog and push it. Then run the workflow again for the existing tag, which replaces the published notes and keeps the attached files:
+Edit the changelog and publish it through a `docs/` pull request. Then run the workflow again for the existing tag, which replaces the published notes and keeps the attached files:
 
 ```bash
 gh workflow run release.yml -f tag=claude-v1.1.0
