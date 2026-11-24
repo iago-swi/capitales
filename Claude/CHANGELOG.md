@@ -2,6 +2,18 @@
 
 Changes to the Claude version of Capitales, newest first. Each version is tagged `claude-vX.Y.Z` and published with these notes on the [releases page](https://github.com/iago-swi/capitales/releases). The rules are in [VERSIONING.md](../VERSIONING.md).
 
+## [1.0.4] - 2026-11-24
+
+### Fixed
+
+- Android: the app is rebuilt with Capacitor 8.6.2, the component that wraps the game into an Android app. Capacitor 8.5.0, used by the 1.0.2 APK, has a critical security flaw ([GHSA-rvm3-566m-v7fv](https://github.com/advisories/GHSA-rvm3-566m-v7fv)): a link opened inside an app could load a page from the internet with the app's own rights. Capitales shows no links and loads nothing from the internet, but the 1.0.2 APK contains the flawed code, so replace it: install `Capitales-1.0.4.apk` over the old app. Your scores are kept.
+
+The game itself is unchanged, in the browser and on the desktop. The Windows and Linux builds were not rebuilt: those of [release 1.0.2](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2) play the same game.
+
+### Documentation
+
+- The README says which release holds which download, and the landing page shows version 1.0.4 on the Claude card.
+
 ## [1.0.3] - 2026-11-22
 
 ### Added
@@ -53,5 +65,6 @@ First version. It was not published as a GitHub release.
 - 15 seconds a question, ten questions a game, a speed bonus and a streak multiplier, and a separate top-ten list for each mode.
 - Builds for the browser (one HTML file that works offline), Windows (installer and portable), Linux and Android.
 
+[1.0.4]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.4
 [1.0.3]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.3
 [1.0.2]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2

@@ -18,7 +18,7 @@ Play online with the link above. Nothing is installed and nothing is sent anywhe
 the country data is inside the page, and scores are kept in your browser.
 
 The same page is also a download: `index.html` from the
-[latest release](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.3),
+[latest release](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.4),
 about 875 KB. Double-click it and it opens in the browser you already have, offline.
 The online game and a downloaded copy keep separate scores, because a browser
 stores data per address.
@@ -59,9 +59,11 @@ these files:
 | `Capitales-x.y.z-x64.tar.gz` | Linux x64: unpack and run `./capitales` |
 | `Capitales-x.y.z.apk` | Android, installed from the file (debug-signed) |
 
-Release 1.0.3 has the `index.html` only; the desktop and Android builds of
-[release 1.0.2](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2)
-play the same game.
+Release 1.0.4 has the `index.html` and the Android APK. The Windows and Linux
+builds of [release 1.0.2](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2)
+play the same game. On Android, use the 1.0.4 APK: the 1.0.2 one was built with
+a Capacitor version that has a security flaw. It installs over the old app and
+keeps the scores.
 
 ## Technical notes
 
@@ -165,8 +167,12 @@ builds are part of it on purpose: `tsc` does not read the script block of a
 | `ui` | The credits: every portrait is an image, no two people share a job, and the swipe rule |
 | `server` | Every endpoint, malformed requests, the rule that a saved game cannot be changed, and clearing a list |
 
-For version 1.0.3 the online build was checked from a `/Claude/` sub-folder on a
-local server: a complete round in **Name** mode, the score still listed after a
-reload, the version on the title screen, and no errors in the browser console.
-Nothing in this round was tested on a real phone or on macOS, and the desktop and
-Android builds were not rebuilt for 1.0.3.
+For version 1.0.4 `npm run verify` passed and the Android APK was rebuilt with
+Capacitor 8.6.2. The file was inspected, not run: its version (1.0.4, code 6),
+the game inside it, and its signing certificate, which is the one of the 1.0.2
+APK, so Android accepts it as an update. It was not installed on a phone or an
+emulator. The online build was last played through for 1.0.3, from a `/Claude/`
+sub-folder on a local server: a complete round in **Name** mode, the score still
+listed after a reload, the version on the title screen, and no errors in the
+browser console. The desktop builds were not rebuilt since 1.0.2, and nothing
+was tested on macOS.
