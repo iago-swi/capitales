@@ -2,6 +2,19 @@
 
 Changes to the Claude version of Capitales, newest first. Each version is tagged `claude-vX.Y.Z` and published with these notes on the [releases page](https://github.com/iago-swi/capitales/releases). The rules are in [VERSIONING.md](../VERSIONING.md).
 
+## [1.0.5] - 2026-11-25
+
+### Changed
+
+- Android: the APK is now a release build, signed with a real key instead of the debug key of the machine that built it. Future versions signed with the same key install over this one and keep your scores.
+- **Once only: uninstall the old app first.** Android refuses to install an app over one signed with a different key, so `Capitales-1.0.5.apk` does not install over 1.0.4 or earlier. Uninstall Capitales, then install 1.0.5. Uninstalling erases the scores stored on the phone.
+
+The game itself is unchanged, in the browser and on the desktop.
+
+### Documentation
+
+- How the APK is built and signed, in the README and in PROJECT.md / PROJET.md.
+
 ## [1.0.4] - 2026-11-24
 
 ### Fixed
@@ -65,6 +78,7 @@ First version. It was not published as a GitHub release.
 - 15 seconds a question, ten questions a game, a speed bonus and a streak multiplier, and a separate top-ten list for each mode.
 - Builds for the browser (one HTML file that works offline), Windows (installer and portable), Linux and Android.
 
+[1.0.5]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.5
 [1.0.4]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.4
 [1.0.3]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.3
 [1.0.2]: https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2
