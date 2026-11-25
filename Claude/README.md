@@ -18,7 +18,7 @@ Play online with the link above. Nothing is installed and nothing is sent anywhe
 the country data is inside the page, and scores are kept in your browser.
 
 The same page is also a download: `index.html` from the
-[latest release](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.4),
+[latest release](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.5),
 about 875 KB. Double-click it and it opens in the browser you already have, offline.
 The online game and a downloaded copy keep separate scores, because a browser
 stores data per address.
@@ -57,13 +57,16 @@ these files:
 | `Capitales-x.y.z-setup.exe` | Windows, with installation |
 | `Capitales-x.y.z-portable.exe` | Windows, no installation |
 | `Capitales-x.y.z-x64.tar.gz` | Linux x64: unpack and run `./capitales` |
-| `Capitales-x.y.z.apk` | Android, installed from the file (debug-signed) |
+| `Capitales-x.y.z.apk` | Android, installed from the file |
 
-Release 1.0.4 has the `index.html` and the Android APK. The Windows and Linux
+Release 1.0.5 has the `index.html` and the Android APK. The Windows and Linux
 builds of [release 1.0.2](https://github.com/iago-swi/capitales/releases/tag/claude-v1.0.2)
-play the same game. On Android, use the 1.0.4 APK: the 1.0.2 one was built with
-a Capacitor version that has a security flaw. It installs over the old app and
-keeps the scores.
+play the same game.
+
+From 1.0.5 the APK is signed with a release key; up to 1.0.4 it was signed with
+a debug key. Android does not install an app over one signed with another key,
+so moving from 1.0.4 or earlier to 1.0.5 means uninstalling first, which erases
+the scores on the phone. Later versions install over 1.0.5 and keep them.
 
 ## Technical notes
 
@@ -167,11 +170,11 @@ builds are part of it on purpose: `tsc` does not read the script block of a
 | `ui` | The credits: every portrait is an image, no two people share a job, and the swipe rule |
 | `server` | Every endpoint, malformed requests, the rule that a saved game cannot be changed, and clearing a list |
 
-For version 1.0.4 `npm run verify` passed and the Android APK was rebuilt with
-Capacitor 8.6.2. The file was inspected, not run: its version (1.0.4, code 6),
-the game inside it, and its signing certificate, which is the one of the 1.0.2
-APK, so Android accepts it as an update. It was not installed on a phone or an
-emulator. The online build was last played through for 1.0.3, from a `/Claude/`
+For version 1.0.5 `npm run verify` passed and the Android APK was built as a
+release and signed with the Capitales key. The file was inspected, not run: its
+version (1.0.5, code 10005), the game inside it, the v2 and v3 signatures, the
+certificate, the alignment, and that it is not debuggable. It was not installed
+on a phone or an emulator. The online build was last played through for 1.0.3, from a `/Claude/`
 sub-folder on a local server: a complete round in **Name** mode, the score still
 listed after a reload, the version on the title screen, and no errors in the
 browser console. The desktop builds were not rebuilt since 1.0.2, and nothing

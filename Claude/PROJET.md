@@ -993,7 +993,8 @@ mesurer ses états.
 ### Android
 
 ```bash
-npm run package:android   # -> apps/android/release/Capitales-debug.apk, 4,5 Mo
+npm run package:android         # -> apps/android/release/Capitales-x.y.z.apk, signé, 3,5 Mo
+npm run package:android:debug   # -> apps/android/release/Capitales-x.y.z-debug.apk
 ```
 
 **Capacitor**, qui emballe l'application dans la WebView d'Android. Même principe
@@ -1034,8 +1035,29 @@ supprimez la ligne `uses-permission` de
 `apps/android/android/app/src/main/AndroidManifest.xml`, recompilez, installez
 sur un téléphone. Si l'app s'ouvre, la permission était inutile.
 
-L'APK est une version de débogage, donc signée avec la clé jetable de debug :
-parfait pour l'installer sur votre propre téléphone, pas pour de la distribution.
+**La signature.** Jusqu'à la 1.0.4, l'APK était une version de débogage, signée
+avec la clé de débogage de la machine qui le fabriquait. Depuis la 1.0.5,
+`build-apk.mjs` lance `assembleRelease`, puis `zipalign`, puis `apksigner` avec
+une clé qui lui est propre, et vérifie la signature. `CAPITALES_KEYSTORE`
+désigne le fichier de clé (par défaut `%USERPROFILE%\.capitales\capitales.jks`),
+`CAPITALES_KEY_ALIAS` l'alias (par défaut `capitales`). Le mot de passe est
+demandé dans le terminal, ou lu par `apksigner` dans `CAPITALES_KEYSTORE_PASS`
+si la variable existe ; le script ne l'écrit nulle part et ne le passe jamais
+sur une ligne de commande. `npm run key:android` crée le fichier de clé une
+fois pour toutes : `keytool` demande le mot de passe et un nom, et un fichier
+existant n'est jamais remplacé. La clé est distincte de celles des autres apps
+du propriétaire : si l'une fuit, une seule app est exposée.
+
+Android n'installe une mise à jour que par-dessus une app signée avec la même
+clé. Passer de la clé de débogage à celle-ci a donc demandé une désinstallation,
+qui efface les scores du téléphone. La même règle impose de sauvegarder le
+fichier de clé et son mot de passe : sans eux, aucune version suivante ne
+s'installera par-dessus l'app.
+
+Le script écrit aussi la version dans le projet généré à chaque construction :
+`versionName` reprend la version, `versionCode` vaut majeure × 10000 + mineure
+× 100 + correctif (10005 pour la 1.0.5). Jusqu'à la 1.0.4, on les réglait à la
+main (la 1.0.4 avait le code 6).
 
 **`apps/android/android/` est ignoré par git.** Il est généré par
 `npx cap add android` ; les sources sont `capacitor.config.ts`, `assets/` et les

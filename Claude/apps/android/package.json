@@ -1,13 +1,15 @@
 {
   "name": "@capitales/android",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "type": "module",
   "scripts": {
     "sync": "cap sync android",
     "open": "cap open android",
     "icons": "node make-icons.mjs",
-    "apk": "node build-apk.mjs"
+    "apk": "node build-apk.mjs",
+    "apk:debug": "node build-apk.mjs --debug",
+    "key": "node build-apk.mjs --create-key"
   },
   "dependencies": {
     "@capacitor/android": "8.6.2",
